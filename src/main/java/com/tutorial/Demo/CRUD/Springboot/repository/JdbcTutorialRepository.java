@@ -39,7 +39,6 @@ public class JdbcTutorialRepository implements TutorialRepository {
 //            System.out.println(e);
             return null;
         }
-        return null;
     }
 
     @Override
