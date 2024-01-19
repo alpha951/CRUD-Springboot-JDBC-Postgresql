@@ -48,6 +48,9 @@ public class JdbcTutorialRepository implements TutorialRepository {
 
     @Override
     public List<Tutorial> findAll() {
+        /*
+        BeanPropertyRowMapper implements RowMapper that converts a table row into a new instance of the specified mapped target class (Tutorial).
+         */
         return jdbcTemplate.query("SELECT * FROM tutorials", BeanPropertyRowMapper.newInstance(Tutorial.class));
 
     }
