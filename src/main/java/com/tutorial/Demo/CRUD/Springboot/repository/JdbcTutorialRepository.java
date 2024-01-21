@@ -11,22 +11,19 @@ import java.util.List;
 
 @Repository
 public class JdbcTutorialRepository implements TutorialRepository {
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Override
     public int save(Tutorial tutorial) {
-        return jdbcTemplate.update("INSERT INTO tutorials (title, description, published)" +
-                        " VALUES(?,?,?)",
+        return jdbcTemplate.update("INSERT INTO tutorials (title, description, published) VALUES(?,?,?)",
                 tutorial.getTitle(), tutorial.getDescription(), tutorial.isPublished());
     }
 
     @Override
-    public int update(Tutorial book) {
-        return jdbcTemplate.update("UPDATE tutorials SET title = ?, description = ?, published = ? WHERE id = ?",
-                book.getTitle(), book.getDescription(), book.isPublished(), book.getId());
-
+    public int update(Tutorial tutorial) {
+        return jdbcTemplate.update("UPDATE tutorials SET title =?, description =?, published =? WHERE id =?",
+                tutorial.getTitle(), tutorial.getDescription(), tutorial.isPublished(), tutorial.getId());
     }
 
     @Override
@@ -51,8 +48,7 @@ public class JdbcTutorialRepository implements TutorialRepository {
         /*
         BeanPropertyRowMapper implements RowMapper that converts a table row into a new instance of the specified mapped target class (Tutorial).
          */
-        return jdbcTemplate.query("SELECT * FROM tutorials", BeanPropertyRowMapper.newInstance(Tutorial.class));
-
+        return jdbcTemplate.query("SELECT * FROM tutorials;", BeanPropertyRowMapper.newInstance(Tutorial.class));
     }
 
     @Override
@@ -63,7 +59,7 @@ public class JdbcTutorialRepository implements TutorialRepository {
 
     @Override
     public List<Tutorial> findByTitleContaining(String title) {
-        String query = "SELECT * from tutorials WHERE title ILIKE '%" + title + "%'";
+        String query = "SELECT * FROM tutorials WHERE title ILIKE '%" + title + "%'";
         return jdbcTemplate.query(query,
                 BeanPropertyRowMapper.newInstance(Tutorial.class));
     }

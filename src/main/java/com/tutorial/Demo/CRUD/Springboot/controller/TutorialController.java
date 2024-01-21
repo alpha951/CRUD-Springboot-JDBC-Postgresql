@@ -12,13 +12,14 @@ import java.util.List;
 
 
 /*
+TODO
 – @CrossOrigin is for configuring allowed origins.
 – @RestController annotation is used to define a controller and to indicate that the return value of the methods should be be bound to the web response body.
 – @RequestMapping("/api") declares that all Apis’ url in the controller will start with /api.
 – We use @Autowired to inject TutorialRepository bean to local variable.
  */
 
-@CrossOrigin(origins = "http://localhost:8081")
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api")
 public class TutorialController {
@@ -41,11 +42,12 @@ public class TutorialController {
             }
             return new ResponseEntity<>(tutorials, HttpStatus.OK);
         } catch (Exception e) {
+            System.out.println("Here inside getAllTutorials" + e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping("/tutorials/:id")
+    @GetMapping("/tutorials/{id}")
     public ResponseEntity<Tutorial> getTutorialById(@PathVariable("id") long id) {
         Tutorial tutorial = tutorialRepository.findById(id);
 
@@ -62,22 +64,24 @@ public class TutorialController {
             tutorialRepository.save(new Tutorial(tutorial.getTitle(), tutorial.getDescription(), false));
             return new ResponseEntity<>("Tutorial was created successfully", HttpStatus.CREATED);
         } catch (Exception e) {
+            System.out.println(e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PutMapping("/tutorials/:id")
+    @PutMapping("/tutorials/{id}")
     public ResponseEntity<String> updateTutorial(@PathVariable("id") long id, @RequestBody Tutorial tutorial) {
         Tutorial tutorialData = tutorialRepository.findById(id);
         if (tutorialData != null) {
-            tutorialRepository.save(new Tutorial(id, tutorial.getTitle(), tutorial.getDescription(), tutorial.isPublished()));
+            tutorialRepository.update(new Tutorial(id, tutorial.getTitle(), tutorial.getDescription(),
+                    tutorial.isPublished()));
             return new ResponseEntity<>("Tutorial was updated successfully", HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @DeleteMapping("/tutorials/:id")
+    @DeleteMapping("/tutorials/{id}")
     public ResponseEntity<String> deleteTutorial(@PathVariable("id") long id) {
         try {
             int result = tutorialRepository.deleteById(id);
